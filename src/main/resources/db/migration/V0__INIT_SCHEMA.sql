@@ -1,6 +1,7 @@
 CREATE TABLE client (
     chat_id            bigint    NOT NULL PRIMARY KEY,
     name               varchar   NOT NULL DEFAULT '',
+    unique_code        varchar   NOT NULL DEFAULT '',
     status             varchar   NOT NULL DEFAULT '',
     created_at         timestamp NOT NULL DEFAULT now(),
     updated_at         timestamp NOT NULL DEFAULT now()
@@ -23,19 +24,23 @@ CREATE TABLE accentuation_progress (
     updated_at         timestamp NOT NULL DEFAULT now()
 );
 
-CREATE TABLE questions (
+CREATE TABLE accentuation_questions (
    id                bigint  NOT NULL PRIMARY KEY,
    text              varchar NOT NULL DEFAULT ''
 );
 
-CREATE TABLE results (
-   id                bigint  NOT NULL PRIMARY KEY,
-   text              varchar NOT NULL DEFAULT ''
+CREATE TABLE accentuation_scales (
+   id                                bigint  NOT NULL PRIMARY KEY,
+   name                              varchar NOT NULL DEFAULT '',
+   description                       varchar NOT NULL DEFAULT '',
+   detailed_description              varchar NOT NULL DEFAULT ''
 );
 
 CREATE SEQUENCE dictionary_seq;
 
 CREATE TABLE dictionary (
     id                bigint NOT NULL DEFAULT nextval('dictionary_seq'),
-    text              varchar
+    text              varchar,
+
+    CONSTRAINT pk_dictionary PRIMARY KEY (id)
 );
