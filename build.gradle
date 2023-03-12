@@ -1,0 +1,101 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.postgresql:postgresql:42.2.11'
+        classpath 'org.flywaydb:flyway-core:9.2.0'
+        classpath 'org.jooq:jooq-codegen:3.16.6'
+    }
+}
+
+plugins {
+    id 'org.springframework.boot' version '2.7.4'
+    id 'io.spring.dependency-management' version '1.0.14.RELEASE'
+    id 'java'
+}
+
+apply from: 'scripts/jooqgenerator.gradle'
+
+group = 'cy.psychotech'
+version = '0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    set('testcontainersVersion', "1.17.4")
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-jooq'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.telegram:telegrambots-spring-boot-starter:5.2.0'
+    implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
+
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.testcontainers:junit-jupiter'
+    testImplementation 'org.testcontainers:postgresql'
+
+    /**********
+     Database
+     **********/
+
+    implementation 'org.flywaydb:flyway-core:9.2.0'
+    runtimeOnly 'org.postgresql:postgresql:42.5.0'
+    implementation "org.jooq:jooq:3.16.6"
+    implementation 'org.jooq:jooq-meta:3.16.6'
+    compileOnly 'org.jooq:jooq-codegen:3.16.6'
+
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.testcontainers:testcontainers-bom:${testcontainersVersion}"
+    }
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+jooq {
+    basePackageName = "cy.psychotech.db"
+    includeMatches = ".*"
+    containerClass ="org.testcontainers.containers.PostgreSQLContainer"
+    imageName = "postgres:latest"
+    compatibleImage = "postgres"
+    generate {
+        fluentSetters = true
+        pojosEqualsAndHashCode = true
+        pojos = true
+        daos = true
+        immutablePojos = true
+        validationAnnotations = true
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs "src/main/java"
+            srcDirs "build/generated-jooq"
+        }
+    }
+}
+
+compileJava.dependsOn tasks.jooqDockerGenerate

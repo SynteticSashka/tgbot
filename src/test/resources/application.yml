@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+    url: jdbc:tc:postgresql:14.4:///ds
+  git branch -M main
+telegrambot:
+  userName: PsychotechBot
+  botToken: 5738647702:AAEjemOV5hKlB1pcPJaFjyoKKtGtNnQlaFM
+  webHookPath: https://ea30-109-105-229-173.eu.ngrok.io
+
+eventservice:
+  period: 600000

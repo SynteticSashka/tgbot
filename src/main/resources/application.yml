@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/bot
+    username: root
+    password: PGf9vcLyoG5onKU
+
+server:
+  port: 5000
+# https://api.telegram.org/bot5738647702:AAEjemOV5hKlB1pcPJaFjyoKKtGtNnQlaFM/setWebhook?url=https://ea30-109-105-229-173.eu.ngrok.io
+# ngrok http 5000
+telegrambot:
+  userName: PsychotechBot
+  botToken: 5738647702:AAEjemOV5hKlB1pcPJaFjyoKKtGtNnQlaFM
+  webHookPath: https://ea30-109-105-229-173.eu.ngrok.io
+
+eventservice:
+  period: 600000
