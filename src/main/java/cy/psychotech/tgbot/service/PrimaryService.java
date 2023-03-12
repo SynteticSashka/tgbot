@@ -1,5 +1,6 @@
 package cy.psychotech.tgbot.service;
 
+import cy.psychotech.tgbot.model.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -19,8 +20,14 @@ public class PrimaryService {
     final SendMessage.SendMessageBuilder builder = SendMessage.builder()
         .chatId(String.valueOf(message.getChatId()));
 
-    if (message.hasText()) {
-      builder.text(clientService.handleMessage(message));
+    if (message.hasText() || message.hasReplyMarkup()) {
+      final Response response = clientService.handleMessage(message);
+      if (response.hasText()) {
+        builder.text(response.getText());
+      }
+      if (response.hasKeyboard()) {
+        builder.replyMarkup(response.getKeyboard());
+      }
     }
 
     return builder.build();

@@ -1,5 +1,6 @@
 package cy.psychotech.tgbot.service;
 
+import cy.psychotech.tgbot.model.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,7 @@ public class ClientService {
   private static final String CANT_READ_MESSAGE = "Не могу распознать ответ. Пожалуйста, проверь и напиши ещё раз!";
 
   @Transactional
-  public String handleMessage(Message message) {
+  public Response handleMessage(Message message) {
     return null; //TODO
   }
 }
