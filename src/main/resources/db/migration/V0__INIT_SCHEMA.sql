@@ -6,7 +6,7 @@ CREATE TABLE client (
     updated_at         timestamp NOT NULL DEFAULT now()
 );
 
-CREATE TABLE progress (
+CREATE TABLE accentuation_progress (
     chat_id            bigint  NOT NULL PRIMARY KEY,
     current_question   int     NOT NULL DEFAULT 0,
     demonstr_score     int     NOT NULL DEFAULT 0,
@@ -19,7 +19,21 @@ CREATE TABLE progress (
     exalt_score        int     NOT NULL DEFAULT 0,
     emotiv_score       int     NOT NULL DEFAULT 0,
     tsiklotim_score    int     NOT NULL DEFAULT 0,
-    result             int
+    is_done            bool    NOT NULL DEFAULT false
+);
+
+CREATE SEQUENCE questions_seq;
+
+CREATE TABLE questions (
+   id                bigint  NOT NULL DEFAULT nextval('questions_seq'),
+   text              varchar NOT NULL DEFAULT ''
+);
+
+CREATE SEQUENCE results_seq;
+
+CREATE TABLE results (
+   id                bigint  NOT NULL DEFAULT nextval('results_seq'),
+   text              varchar NOT NULL DEFAULT ''
 );
 
 CREATE SEQUENCE dictionary_seq;
