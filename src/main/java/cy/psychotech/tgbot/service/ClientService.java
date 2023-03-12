@@ -15,6 +15,6 @@ public class ClientService {
 
   @Transactional
   public String handleMessage(Message message) {
-    return null;
+    return null; //TODO
   }
 }
