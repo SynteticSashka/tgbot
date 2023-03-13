@@ -2,6 +2,8 @@ package cy.psychotech.tgbot.util;
 
 import lombok.experimental.UtilityClass;
 import java.util.ArrayList;
+import java.util.List;
+
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
@@ -9,6 +11,23 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 
 @UtilityClass
 public class KeyboardUtils {
+  public ReplyKeyboard getKeyboard(List<String> buttons) {
+    ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup();
+    keyboard.setResizeKeyboard(true);
+    keyboard.setOneTimeKeyboard(false);
+
+    ArrayList<KeyboardRow> keyboardRows = new ArrayList<>();
+    KeyboardRow keyboardRow = new KeyboardRow();
+    keyboardRows.add(keyboardRow);
+
+    for (String button : buttons) {
+      keyboardRow.add(new KeyboardButton(button));
+    }
+
+    keyboard.setKeyboard(keyboardRows);
+    return keyboard;
+  }
+
   public ReplyKeyboard getYesNoKeyboard() {
     ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup();
     keyboard.setResizeKeyboard(true); //подгоняем размер

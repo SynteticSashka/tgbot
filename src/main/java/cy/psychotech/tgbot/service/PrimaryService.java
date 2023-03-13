@@ -9,11 +9,14 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class PrimaryService {
   private final ClientService clientService;
-  private final AccentuationService accentuationService;
+  private final ResponseService responseService;
+  private final ProgressService progressService;
 
   /***
    * This is main method than process any message incoming from bot
@@ -44,11 +47,11 @@ public class PrimaryService {
     final Client client = clientService.getOrCreateClient(chatId);
     // Основная метка, на каком этапе сейчас находится клиент
     final Integer currentState = client.getCurrentState();
-    // Обрабатываем сообщение в зависимости от стейта
-    if (currentState < 2) {
-      return clientService.handle(currentState);
-    } else {
-      return accentuationService.handle(currentState);
-    }
+
+    return responseService.handle(
+        client.getId(),
+        Optional.ofNullable(message.getText()).orElse(""),
+        currentState
+    );
   }
 }
