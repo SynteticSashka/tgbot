@@ -11,11 +11,12 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ClientService {
+public class ClientService extends AbstractService {
   private static final String ERROR_MESSAGE = "Упс! Что-то сломалось. Пожалуйста, сообщите об ошибке моему создателю!";
   private static final String CANT_READ_MESSAGE = "Не могу распознать ответ. Пожалуйста, проверь и напиши ещё раз!";
   private final ClientRepository clientRepository;
 
+  @Override
   public Response handle(int state) {
 
   }

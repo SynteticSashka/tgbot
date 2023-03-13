@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class AccentuationService {
+public class AccentuationService extends AbstractService {
   private final StateMessagesRepository repository;
 
   public Response handle(int state) {
