@@ -1,8 +1,10 @@
 package cy.psychotech.tgbot.service;
 
+import cy.psychotech.db.tables.pojos.Client;
 import cy.psychotech.tgbot.model.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -11,6 +13,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 @RequiredArgsConstructor
 public class PrimaryService {
   private final ClientService clientService;
+  private final AccentuationService accentuationService;
 
   /***
    * This is main method than process any message incoming from bot
@@ -21,7 +24,7 @@ public class PrimaryService {
         .chatId(String.valueOf(message.getChatId()));
 
     if (message.hasText() || message.hasReplyMarkup()) {
-      final Response response = clientService.handleMessage(message);
+      final Response response = handleMessage(message);
       if (response.hasText()) {
         builder.text(response.getText());
       }
@@ -33,8 +36,19 @@ public class PrimaryService {
     return builder.build();
   }
 
-  public SendMessage CallbackQuery(Update update) {
-    return new SendMessage(); //TODO
-  }
+  @Transactional
+  public Response handleMessage(Message message) {
+    final Long chatId = message.getChatId();
 
+    // Если у нас уже есть клиент из этого чата - возвращаем его, если нет - создаём нового
+    final Client client = clientService.getOrCreateClient(chatId);
+    // Основная метка, на каком этапе сейчас находится клиент
+    final Integer currentState = client.getCurrentState();
+    // Обрабатываем сообщение в зависимости от стейта
+    if (currentState < 2) {
+      return clientService.handle(currentState);
+    } else {
+      return accentuationService.handle(currentState);
+    }
+  }
 }

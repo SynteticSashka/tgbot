@@ -1,15 +1,14 @@
 CREATE TABLE client (
     chat_id            bigint    NOT NULL PRIMARY KEY,
     name               varchar   NOT NULL DEFAULT '',
-    unique_code        varchar   NOT NULL DEFAULT '',
-    status             varchar   NOT NULL DEFAULT '',
+    id                 varchar   NOT NULL DEFAULT '',
+    current_state      int       NOT NULL DEFAULT 0,
     created_at         timestamp NOT NULL DEFAULT now(),
     updated_at         timestamp NOT NULL DEFAULT now()
 );
 
 CREATE TABLE accentuation_progress (
-    chat_id            bigint    NOT NULL PRIMARY KEY,
-    current_question   int       NOT NULL DEFAULT 0,
+    id                 varchar   NOT NULL PRIMARY KEY,
     demonstr_score     int       NOT NULL DEFAULT 0,
     zastr_score        int       NOT NULL DEFAULT 0,
     pedant_score       int       NOT NULL DEFAULT 0,
@@ -34,6 +33,15 @@ CREATE TABLE accentuation_scales (
    name                              varchar NOT NULL DEFAULT '',
    description                       varchar NOT NULL DEFAULT '',
    detailed_description              varchar NOT NULL DEFAULT ''
+);
+
+CREATE SEQUENCE state_messages_seq;
+
+CREATE TABLE state_messages (
+    state                int NOT NULL DEFAULT nextval('state_messages_seq'),
+    message              varchar,
+
+    CONSTRAINT pk_state_messages PRIMARY KEY (state)
 );
 
 CREATE SEQUENCE dictionary_seq;

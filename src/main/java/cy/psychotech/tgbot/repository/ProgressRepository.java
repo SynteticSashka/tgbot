@@ -13,14 +13,23 @@ import org.springframework.stereotype.Repository;
 public class ProgressRepository {
   private final DSLContext dslContext;
 
-  public Optional<AccentuationProgress> getProgress(Long chatId) {
+  public Optional<AccentuationProgress> getProgress(String id) {
     return this.dslContext.selectFrom(ACCENTUATION_PROGRESS)
-        .where(ACCENTUATION_PROGRESS.CHAT_ID.eq(chatId))
+        .where(ACCENTUATION_PROGRESS.ID.eq(id))
         .fetchOptional()
         .map(r -> r.into(AccentuationProgress.class));
   }
 
-  public Optional<AccentuationProgress> getResult(Long chatId) {
-    return this.getProgress(chatId).filter(r -> r.getIsDone().equals(true));
+  public AccentuationProgress createProgress(String id) {
+    return this.dslContext.insertInto(ACCENTUATION_PROGRESS)
+        .columns(ACCENTUATION_PROGRESS.ID)
+        .values(id)
+        .returning()
+        .fetchOne()
+        .map(r -> r.into(AccentuationProgress.class));
+  }
+
+  public Optional<AccentuationProgress> getResult(String id) {
+    return this.getProgress(id).filter(r -> r.getIsDone().equals(true));
   }
 }
