@@ -90,48 +90,68 @@ public class ResponseService implements StateHandler {
       // 4 стейта нет!
       // Принимаем первый ответ, задаём второй вопрос
       case 5 -> {
-        String textToSend = questionsRepository.getQuestion(2);
-        if (text.contains("да")) {
-          progressRepository.upScale(id, AccentuationScale.GIPERTIMNOST, 3);
-          builder.text(textToSend);
-          clientRepository.toNextState(id);
-        } else if (text.contains("нет")) {
-          builder.text(textToSend);
-          clientRepository.toNextState(id);
-        } else {
-          builder.text(MESSAGE_NOT_PROCESSED);
-        }
+        builder.text(processDiagnostic(text, id, 2, AccentuationScale.GIPERTIMNOST, 3, true));
+        builder.keyboard(KeyboardUtils.getYesNoKeyboard());
       }
       // Принимаем 2 ответ, задаём вопрос 3
       case 6 -> {
-        String textToSend = questionsRepository.getQuestion(3);
-        if (text.contains("да")) {
-          progressRepository.upScale(id, AccentuationScale.ZASTREVANIE, 2);
-          builder.text(textToSend);
-          clientRepository.toNextState(id);
-        } else if (text.contains("нет")) {
-          builder.text(textToSend);
-          clientRepository.toNextState(id);
-        } else {
-          builder.text(MESSAGE_NOT_PROCESSED);
-        }
+        builder.text(processDiagnostic(text, id, 3, AccentuationScale.ZASTREVANIE, 2, true));
+        builder.keyboard(KeyboardUtils.getYesNoKeyboard());
       }
       // Принимаем 3 ответ, задаём вопрос 4
       case 7 -> {
-        String textToSend = questionsRepository.getQuestion(4);
-        if (text.contains("да")) {
-          progressRepository.upScale(id, AccentuationScale.EMOTIVNOST, 3);
-          builder.text(textToSend);
-          clientRepository.toNextState(id);
-        } else if (text.contains("нет")) {
-          builder.text(textToSend);
-          clientRepository.toNextState(id);
-        } else {
-          builder.text(MESSAGE_NOT_PROCESSED);
-        }
+        builder.text(processDiagnostic(text, id, 4, AccentuationScale.EMOTIVNOST, 3, true));
+        builder.keyboard(KeyboardUtils.getYesNoKeyboard());
+      }
+      // Принимаем 4 ответ, задаём вопрос 5
+      case 8 -> {
+        builder.text(processDiagnostic(text, id, 5, AccentuationScale.TREVOZJNOST, 3, false));
+        builder.keyboard(KeyboardUtils.getYesNoKeyboard());
+      }
+      // Принимаем 5 ответ, задаём вопрос 6
+      case 9 -> {
+        builder.text(processDiagnostic(text, id, 6, AccentuationScale.TSIKLOTIMNOST, 3, true));
+        builder.keyboard(KeyboardUtils.getYesNoKeyboard());
+      }
+      // Принимаем 6 ответ, задаём вопрос 7
+      case 10 -> {
+        builder.text(processDiagnostic(text, id, 7, AccentuationScale.DEMONSTRATIVNOST, 2, true));
+        builder.keyboard(KeyboardUtils.getYesNoKeyboard());
       }
     }
 
     return builder.build();
+  }
+
+  public String processDiagnostic(String text,
+                                  String clientId,
+                                  int question,
+                                  AccentuationScale scale,
+                                  int change,
+                                  boolean ifYes) {
+    String textToSend = questionsRepository.getQuestion(question);
+    if (ifYes) {
+      if (text.contains("да")) {
+        progressRepository.upScale(clientId, scale, change);
+        clientRepository.toNextState(clientId);
+        return textToSend;
+      } else if (text.contains("нет")) {
+        clientRepository.toNextState(clientId);
+        return textToSend;
+      } else {
+        return MESSAGE_NOT_PROCESSED;
+      }
+    } else {
+      if (text.contains("да")) {
+        clientRepository.toNextState(clientId);
+        return textToSend;
+      } else if (text.contains("нет")) {
+        progressRepository.upScale(clientId, scale, change);
+        clientRepository.toNextState(clientId);
+        return textToSend;
+      } else {
+        return MESSAGE_NOT_PROCESSED;
+      }
+    }
   }
 }
