@@ -2,6 +2,7 @@ package cy.psychotech.tgbot.service;
 
 import cy.psychotech.db.tables.pojos.Client;
 import cy.psychotech.tgbot.model.Response;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,14 +10,11 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class PrimaryService {
   private final ClientService clientService;
   private final ResponseService responseService;
-  private final ProgressService progressService;
 
   /***
    * This is main method than process any message incoming from bot
